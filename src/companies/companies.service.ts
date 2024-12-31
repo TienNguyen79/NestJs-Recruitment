@@ -35,6 +35,14 @@ export class CompaniesService {
   async findAll(currentPage: number, limit: number, qs: string) {
     const { filter, sort, population } = aqp(qs);
 
+    if (filter.name) {
+      filter.name = { $regex: filter.name, $options: 'i' }; // Không phân biệt chữ hoa/thường
+    }
+
+    if (filter.address) {
+      filter.address = { $regex: filter.address, $options: 'i' }; // Không phân biệt chữ hoa/thường
+    }
+
     delete filter.current;
     delete filter.pageSize;
 
@@ -42,12 +50,14 @@ export class CompaniesService {
     const defaultLimit = +limit ? +limit : 10;
     const totalItems = (await this.companyModel.find(filter)).length;
     const totalPages = Math.ceil(totalItems / defaultLimit);
+    const sortCondition = sort || { createdAt: -1 }; // mặc định sort theo thời gian mới nhất
+
     const result = await this.companyModel
       .find(filter)
       .skip(offset)
       .limit(defaultLimit)
-      .sort(sort as any)
-      .populate(population)
+      .sort(sortCondition as any)
+      .populate(population) // để tham chiếu và lấy thông tin chi tiết từ các tài liệu liên kết trong cơ sở dữ liệu.
       .exec();
 
     return {
@@ -61,8 +71,8 @@ export class CompaniesService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} company`;
+  async findCompanyById(id: string) {
+    return await this.companyModel.findOne({ _id: id });
   }
 
   async remove(id: string, user: IUser) {

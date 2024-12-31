@@ -44,10 +44,10 @@ export class CompaniesController {
     return this.companiesService.findAll(+currentPage, +limit, qs);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.companiesService.findOne(+id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.companiesService.findOne(+id);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string, @User() user: IUser) {

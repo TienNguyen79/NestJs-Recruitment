@@ -81,6 +81,9 @@ export class UsersService {
   async findOne(id: string) {
     if (!mongoose.Types.ObjectId.isValid(id)) return 'user not found';
     const result = await this.userModel.findOne({ _id: id });
+    // const result2 = await this.userModel
+    //   .findOne({ _id: id })
+    //   .select(['-password', '-name']); // nếu muốn bỏ field nào thì dùng select kia, bỏ nhiều thì dùng [] còn 1 chỉ cần truyền vào string
 
     const { password, ...rest } = result.toObject();
     return rest;
