@@ -36,10 +36,10 @@ export class JobsService {
     delete filter.current;
     delete filter.pageSize;
 
-    if (filter.name && typeof filter.name != 'object') {
-      // filter.name != 'object' tránh trường hợp nhập rỗng thì lỗi
-      filter.name = { $regex: filter.name, $options: 'i' }; // Không phân biệt chữ hoa/thường
-    }
+    // if (filter.name && typeof filter.name != 'object') {
+    //   // filter.name != 'object' tránh trường hợp nhập rỗng thì lỗi
+    //   filter.name = { $regex: filter.name, $options: 'i' }; // Không phân biệt chữ hoa/thường
+    // }
 
     const offset = (+currentPage - 1) * +limit;
     const defaultLimit = +limit ? +limit : 10;

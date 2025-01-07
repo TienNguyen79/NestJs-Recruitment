@@ -8,13 +8,15 @@ import {
   Delete,
   Req,
   Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { CreateCompanyDto } from './dto/create-company.dto';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
 import { Request } from 'express';
+import mongoose from 'mongoose';
 
 @Controller('companies')
 export class CompaniesController {
@@ -35,6 +37,7 @@ export class CompaniesController {
   }
 
   @Get()
+  @Public()
   @ResponseMessage('Fetch List Company with paginate')
   findAll(
     @Query('current') currentPage: string,
@@ -44,10 +47,15 @@ export class CompaniesController {
     return this.companiesService.findAll(+currentPage, +limit, qs);
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.companiesService.findOne(+id);
-  // }
+  @Get(':id')
+  @Public()
+  @ResponseMessage('Get a Company')
+  findOne(@Param('id') id: string) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestException(`not found company with id = ${id}`);
+    }
+    return this.companiesService.findCompanyById(id);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string, @User() user: IUser) {

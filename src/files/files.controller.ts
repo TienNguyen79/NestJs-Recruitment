@@ -21,11 +21,15 @@ import {
   FileInterceptor,
   FilesInterceptor,
 } from '@nestjs/platform-express';
-import { ResponseMessage } from 'src/decorator/customize';
+import { Public, ResponseMessage } from 'src/decorator/customize';
+import { AwsS3Service } from './aws-s3.service';
 
 @Controller('files')
 export class FilesController {
-  constructor(private readonly filesService: FilesService) {}
+  constructor(
+    private readonly filesService: FilesService,
+    private readonly awsS3Service: AwsS3Service,
+  ) {}
 
   // @Post('upload')
   // @ResponseMessage('Upload a file')
@@ -114,6 +118,9 @@ export class FilesController {
           'image/jpeg',
           'image/gif',
           'application/pdf',
+          'application/msword', // Mime type cho .doc
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // Mime type cho .docx
+          'text/plain',
         ];
         if (!validMimeTypes.includes(file.mimetype)) {
           return cb(new BadRequestException('Invalid file type.'), false);
@@ -126,7 +133,8 @@ export class FilesController {
     @UploadedFiles(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({
-          fileType: /^(image\/png|image\/jpeg|image\/gif|application\/pdf)$/i,
+          fileType:
+            /^(image\/png|image\/jpeg|image\/gif|application\/pdf|application\/msword|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.document|text\/plain)$/i,
         })
         .addMaxSizeValidator({
           maxSize: 1024 * 1024 * 5, // 5MB
@@ -163,6 +171,17 @@ export class FilesController {
         fileName: file.filename,
         originalName: file.originalname,
       })),
+    };
+  }
+
+  @Post('upload-s3')
+  @Public()
+  @UseInterceptors(FileInterceptor('file')) // `file` là tên field trong form-data
+  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    const fileUrl = await this.awsS3Service.uploadFileS3(file);
+    return {
+      message: 'File uploaded successfully',
+      fileUrl,
     };
   }
 

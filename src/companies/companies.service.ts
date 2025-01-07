@@ -35,13 +35,13 @@ export class CompaniesService {
   async findAll(currentPage: number, limit: number, qs: string) {
     const { filter, sort, population } = aqp(qs);
 
-    if (filter.name) {
-      filter.name = { $regex: filter.name, $options: 'i' }; // Không phân biệt chữ hoa/thường
-    }
+    // if (filter.name) {
+    //   filter.name = { $regex: filter.name, $options: 'i' }; // Không phân biệt chữ hoa/thường
+    // }
 
-    if (filter.address) {
-      filter.address = { $regex: filter.address, $options: 'i' }; // Không phân biệt chữ hoa/thường
-    }
+    // if (filter.address) {
+    //   filter.address = { $regex: filter.address, $options: 'i' }; // Không phân biệt chữ hoa/thường
+    // }
 
     delete filter.current;
     delete filter.pageSize;
