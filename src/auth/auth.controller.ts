@@ -16,10 +16,14 @@ import { Public, ResponseMessage } from 'src/decorator/customize';
 import { LocalAuthGuard } from './local-auth-guard';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { Request as RequestExpress, Response } from 'express';
+import { RolesService } from 'src/roles/roles.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly rolesService: RolesService,
+  ) {}
 
   @Public() // khi tất cả bắt buộc phải có jwt mới call api được nhưng cho cái PUBLIC vào thì không cần
   @UseGuards(LocalAuthGuard)
@@ -44,8 +48,11 @@ export class AuthController {
 
   @Get('/account')
   @ResponseMessage('Get user information')
-  handleGetAccount(@Request() req) {
-    return { user: req.user };
+  async handleGetAccount(@Request() req) {
+    const { user } = req;
+    const temp = (await this.rolesService.findOne(user.role._id)) as any;
+    user.permissions = temp.permissions;
+    return { user };
   }
 
   @Public()

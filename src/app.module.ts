@@ -12,6 +12,9 @@ import { CompaniesModule } from './companies/companies.module';
 import { JobsModule } from './jobs/jobs.module';
 import { FilesModule } from './files/files.module';
 import { ResumesModule } from './resumes/resumes.module';
+import { PermissionsModule } from './permissions/permissions.module';
+import { RolesModule } from './roles/roles.module';
+import { DatabaseModule } from './database/database.module';
 @Module({
   imports: [
     // MongooseModule.forRoot(
@@ -40,6 +43,9 @@ import { ResumesModule } from './resumes/resumes.module';
     JobsModule,
     FilesModule,
     ResumesModule,
+    PermissionsModule,
+    RolesModule,
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

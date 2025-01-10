@@ -31,15 +31,9 @@ export class UsersController {
     @User() currentUser: IUser,
   ) {
     console.log('🚀 ~ UsersController ~ currentUser:', currentUser);
-    if (currentUser.role === 'ADMIN') {
-      const user = await this.usersService.findOnebyUsername(
-        createUserDto.email,
-      );
-      if (user) throw new BadRequestException('User already exists');
-      return this.usersService.createUser(createUserDto, currentUser);
-    } else {
-      throw new UnauthorizedException('Không có quyền');
-    }
+    const user = await this.usersService.findOnebyUsername(createUserDto.email);
+    if (user) throw new BadRequestException('User already exists');
+    return this.usersService.createUser(createUserDto, currentUser);
   }
 
   @Get()

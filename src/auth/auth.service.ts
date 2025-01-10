@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import ms from 'ms';
+import { RolesService } from 'src/roles/roles.service';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { IUser } from 'src/users/users.interface';
 import { UsersService } from 'src/users/users.service';
@@ -17,6 +18,7 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private roleService: RolesService,
   ) {}
 
   //userName / pass là 2 tham số thư viện passport ném về
@@ -27,7 +29,15 @@ export class AuthService {
       const isValid = this.usersService.isValidPassword(pass, user.password);
 
       if (isValid === true) {
-        return user;
+        const userRole = user.role as unknown as { _id: string; name: string };
+        const temp = await this.roleService.findOne(userRole._id);
+
+        const objUser = {
+          ...user.toObject(),
+          permissions: temp?.permissions ?? [],
+        };
+
+        return objUser;
       }
     }
 
@@ -35,7 +45,7 @@ export class AuthService {
   }
 
   async login(user: IUser, response: Response) {
-    const { _id, email, name, role } = user;
+    const { _id, email, name, role, permissions } = user;
     const payload = {
       sub: 'Token Login',
       iss: 'From Server',
@@ -64,6 +74,7 @@ export class AuthService {
         name,
         email,
         role,
+        permissions,
       },
     };
   }
@@ -111,6 +122,9 @@ export class AuthService {
         // update user with refresh token
         await this.usersService.updateUserToken(refresh_token, _id.toString());
 
+        const userRole = user.role as unknown as { _id: string; name: string };
+        const temp = await this.roleService.findOne(userRole._id);
+
         //...
         response.cookie('refresh_token', refresh_token, {
           httpOnly: true,
@@ -125,6 +139,7 @@ export class AuthService {
             name,
             email,
             role,
+            permissions: temp?.permissions ?? [],
           },
         };
       } else {

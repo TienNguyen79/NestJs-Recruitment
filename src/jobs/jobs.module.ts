@@ -14,13 +14,17 @@ import { CompaniesService } from 'src/companies/companies.service';
         name: Job.name,
         schema: JobSchema,
       },
-    ]),
-    MongooseModule.forFeature([
       {
         name: Company.name,
         schema: CompanySchema,
       },
     ]),
+    // MongooseModule.forFeature([
+    //   {
+    //     name: Company.name,
+    //     schema: CompanySchema,
+    //   },
+    // ]),
   ],
   controllers: [JobsController],
   providers: [JobsService, CompaniesService],
