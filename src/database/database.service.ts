@@ -27,7 +27,7 @@ export class DatabaseService implements OnModuleInit {
     private userService: UsersService,
   ) {}
   async onModuleInit() {
-    const isInit = this.configService.get<string>('SHOULD_INIT');
+    const isInit = this.configService.get<string>('SHOULD_INIT'); // xem có nên khởi tại fakedata không
     if (Boolean(isInit)) {
       const countUser = await this.userModel.count({});
       const countPermission = await this.permissionModel.count({});

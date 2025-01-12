@@ -112,7 +112,7 @@ export class UsersService {
     if (!mongoose.Types.ObjectId.isValid(id)) return 'user not found';
 
     const foundUser = await this.userModel.findById(id);
-    if (foundUser.email === 'admin@gmail.com') {
+    if (foundUser && foundUser.email === 'admin@gmail.com') {
       throw new BadRequestException('Không thể xóa tài khoản admin@gmail.com');
     }
     const result = await this.userModel.updateOne(
