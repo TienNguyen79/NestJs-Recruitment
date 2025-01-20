@@ -1,0 +1,59 @@
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <title>Job Email</title>
+  </head>
+  <body
+    style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f9f9f9;'
+  >
+    <div
+      style='max-width: 600px; margin: 20px auto; background-color: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;'
+    >
+      <p style='font-size: 16px; margin: 0 0 20px;'>Hi {{receiver}}</p>
+      <p style='font-size: 14px; margin: 0 0 20px;'>One of these jobs may be
+        your next one. Find out today!</p>
+
+      {{#each jobs}}
+        <!-- Job Item -->
+        <div style='border-bottom: 1px solid #ddd; padding: 15px 0;'>
+          <h3
+            style='font-size: 18px; color: #007BFF; margin: 0 0 5px;'
+          >{{name}}</h3>
+          <p style='margin: 0 0 5px; font-size: 14px;'>{{company}}</p>
+          <p style='margin: 0 0 10px; font-size: 14px; color: #555;'>{{salary}}
+            USD</p>
+          <p style='margin: 0; font-size: 14px; color: #555;'>
+            {{#each skills}}
+              {{this}}
+              &bull;
+            {{/each}}
+          </p>
+        </div>
+      {{/each}}
+
+      <!-- Job Item -->
+      {{! <div style='border-bottom: 1px solid #ddd; padding: 15px 0;'>
+        <h3 style='font-size: 18px; color: #007BFF; margin: 0 0 5px;'>Web
+          Developer (PHP, JavaScript)</h3>
+        <p style='margin: 0 0 5px; font-size: 14px;'>VINAKET CO.LTD</p>
+        <p style='margin: 0 0 10px; font-size: 14px; color: #555;'>1,000 - 2,500
+          USD</p>
+        <p style='margin: 0; font-size: 14px; color: #555;'>PHP &bull;
+          JavaScript &bull; English</p>
+      </div> }}
+
+      <!-- Button -->
+      <div style='text-align: center; margin: 20px 0;'>
+        <a
+          href='#'
+          style='display: inline-block; background-color: #FF4B4B; color: #fff; padding: 10px 20px; font-size: 14px; text-decoration: none; border-radius: 4px;'
+        >
+          Xem thêm job tại IT Việc
+        </a>
+      </div>
+
+      <p style='font-size: 14px; color: #555;'>Cheers, MT Corp </p>
+    </div>
+  </body>
+</html>

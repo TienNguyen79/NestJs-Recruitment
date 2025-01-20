@@ -15,6 +15,8 @@ import { ResumesModule } from './resumes/resumes.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { RolesModule } from './roles/roles.module';
 import { DatabaseModule } from './database/database.module';
+import { SubscribersModule } from './subscribers/subscribers.module';
+import { MailModule } from './mail/mail.module';
 @Module({
   imports: [
     // MongooseModule.forRoot(
@@ -46,6 +48,8 @@ import { DatabaseModule } from './database/database.module';
     PermissionsModule,
     RolesModule,
     DatabaseModule,
+    SubscribersModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
