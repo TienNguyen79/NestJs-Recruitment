@@ -7,6 +7,7 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { TransformInterceptor } from './core/transform.interceptor';
 import cookieParser from 'cookie-parser';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -20,7 +21,7 @@ async function bootstrap() {
   app.useGlobalGuards(new JwtAuthGuard(reflector));
   app.useGlobalInterceptors(new TransformInterceptor(reflector));
 
-  app.useGlobalPipes(new ValidationPipe()); // validate
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true })); // validate
 
   app.setGlobalPrefix('api');
   app.enableVersioning({
@@ -36,6 +37,29 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
+
+  // config swagger
+  const config = new DocumentBuilder()
+    .setTitle('NestJS Recruiment web API -NMT79')
+    .setDescription('The cats API description')
+    .setVersion('1.0')
+    // .addTag('cats')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'Bearer',
+        bearerFormat: 'JWT',
+        in: 'header',
+      },
+      'token',
+    )
+    .addSecurityRequirements('token')
+    .build();
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, documentFactory, {
+    swaggerOptions: { persistAuthorization: true }, // khi có token trong khóa rồi, load lại trang không bị mất
+  });
+
   await app.listen(configService.get<string>('PORT')); // port này trong file env
 }
 bootstrap();

@@ -23,7 +23,8 @@ import {
 } from '@nestjs/platform-express';
 import { Public, ResponseMessage } from 'src/decorator/customize';
 import { AwsS3Service } from './aws-s3.service';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Upload files')
 @Controller('files')
 export class FilesController {
   constructor(

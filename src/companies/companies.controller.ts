@@ -17,7 +17,8 @@ import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
 import { Request } from 'express';
 import mongoose from 'mongoose';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('companies')
 @Controller('companies')
 export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}

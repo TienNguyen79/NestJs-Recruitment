@@ -14,10 +14,13 @@ import {
 import { AuthService } from './auth.service';
 import { Public, ResponseMessage } from 'src/decorator/customize';
 import { LocalAuthGuard } from './local-auth-guard';
-import { RegisterUserDto } from 'src/users/dto/create-user.dto';
+import { RegisterUserDto, UserLoginDto } from 'src/users/dto/create-user.dto';
 import { Request as RequestExpress, Response } from 'express';
 import { RolesService } from 'src/roles/roles.service';
+import { ThrottlerGuard } from '@nestjs/throttler';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('auth') // dành cho swagger
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -27,6 +30,8 @@ export class AuthController {
 
   @Public() // khi tất cả bắt buộc phải có jwt mới call api được nhưng cho cái PUBLIC vào thì không cần
   @UseGuards(LocalAuthGuard)
+  @UseGuards(ThrottlerGuard)
+  @ApiBody({ type: UserLoginDto })
   @Post('/login')
   @ResponseMessage('User Login')
   handleLogin(@Request() req, @Res({ passthrough: true }) response: Response) {

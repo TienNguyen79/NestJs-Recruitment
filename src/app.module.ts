@@ -17,12 +17,22 @@ import { RolesModule } from './roles/roles.module';
 import { DatabaseModule } from './database/database.module';
 import { SubscribersModule } from './subscribers/subscribers.module';
 import { MailModule } from './mail/mail.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerModule } from '@nestjs/throttler';
 @Module({
   imports: [
     // MongooseModule.forRoot(
     //   'mongodb+srv://tiennguyen:NX4HVfVaqGHZwxlv@cluster0.25kdj14.mongodb.net/',
     // ),
     // config kết nối
+    ScheduleModule.forRoot(),
+    ThrottlerModule.forRoot([
+      // rate limit: cái hiện tại có nghĩa là trong 60s chỉ gọi được 10 request nếu quá sẽ báo lỗi 429
+      {
+        ttl: 60000,
+        limit: 10,
+      },
+    ]),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
