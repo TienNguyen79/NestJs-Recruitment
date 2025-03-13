@@ -21,7 +21,10 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('auth') // dành cho swagger
-@Controller('auth')
+@Controller({
+  version: '1',
+  path: 'auth',
+})
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
